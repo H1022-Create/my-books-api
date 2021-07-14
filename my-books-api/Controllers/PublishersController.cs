@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using my_books_api.ActionResults;
 using my_books_api.Data.Services;
 using my_books_api.Data.ViewModels;
 using System;
@@ -14,10 +16,31 @@ namespace my_books_api.Controllers
     public class PublishersController : ControllerBase
     {
         private PublishersService _publishersService;
-        public PublishersController(PublishersService publishersService)
+
+        private readonly ILogger<PublishersController> _logger;
+        public PublishersController(PublishersService publishersService, ILogger<PublishersController> logger)
         {
             _publishersService = publishersService;
+            _logger = logger;
         }
+
+        [HttpGet("get-all-publishers")]
+
+        public IActionResult GetAllPublishers(string sortBy, string searchString, int pageNumber)
+        {
+            
+            try
+            {
+                _logger.LogInformation("This is just a log in GetAllPublishers()");
+                var _result = _publishersService.GetAllPublishers(sortBy, searchString, pageNumber);
+                return Ok(_result);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Sorry, we could not load the publishers");
+            }
+        }
+
         [HttpPost("add-publisher")]
         public IActionResult AddBook([FromBody] PublisherVM publisher)
         {
@@ -28,7 +51,18 @@ namespace my_books_api.Controllers
         public IActionResult GetPublisherById(int id)
         {
             var _response = _publishersService.GetPublisherbyId(id);
-            return Ok(_response);
+
+            if (_response != null)
+
+            {
+                return Ok(_response);
+            
+            }
+            else
+            {
+               
+                return NotFound();
+            }
         }
 
             [HttpGet("get-publisher-books-with-authors/{id}")]

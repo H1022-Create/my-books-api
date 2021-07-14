@@ -1,4 +1,5 @@
-﻿using System;
+﻿using my_books_api.Data.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,5 +14,7 @@ namespace my_books_api.Data.Models
         //Navigation Properties
 
         public List<Book> Books { get; set; }
+
+       
     }
 }
